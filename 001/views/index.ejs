@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <title>Cognito UserPool Authentication</title>
+    <meta charset="UTF-8">
+    <script src="./js/aws-amplify.min.js"></script>
+    <script src="./js/amplify-config.js"></script>
+</head>
+
+<body onload="onLoad()">
+<div>
+    <div>Cognito UserPool Authentication Example</div>
+    <div>
+        <a id="SignInLink" href="javascript:void(0)" style="display:block;" title="Sign in">Sign In / Sign Up</a>
+    </div>
+    <div>
+        <a id="SignOutLink" href="javascript:void(0)" style="display:none;" title="Sign Out">Sign Out</a>
+    </div>
+    <div><pre id="CognitoCurrentSessionDiv"></pre></div>
+</div>
+
+<script>
+    function onLoad() {
+        let Amplify = window['aws_amplify'].Amplify;
+        let Auth = window['aws_amplify'].Auth;
+
+        Amplify.configure(amplifyConfig);
+
+        document.getElementById("SignInLink").addEventListener("click", function() {
+            Auth.federatedSignIn();
+        });
+
+        document.getElementById("SignOutLink").addEventListener("click", function() {
+            document.getElementById("SignInLink").style.display = 'block';
+            document.getElementById("SignOutLink").style.display = 'none';
+            Auth.signOut();
+        });
+
+        Auth.currentSession().then(session => {
+            document.getElementById("SignInLink").style.display = 'none';
+            document.getElementById("SignOutLink").style.display = 'block';
+            document.getElementById('CognitoCurrentSessionDiv').innerText = JSON.stringify(session, null, 2);
+        }).catch(e => {
+            console.log(e);
+        });
+    }
+
+</script>
+</body>
+</html>
